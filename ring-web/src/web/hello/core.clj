@@ -4,11 +4,21 @@
 (defn hello [req]
   {:status 200
    :headers {"Content-Type" "text/plain"}
-   :body "Hello World"})
+   :body "Hello"})
 
 (defn wrap-server [handler]
   (fn [request]
     (assoc-in (handler request) [:headers "Server"] "My Web Server(1.0)")))
+
+(defonce server (atom nil))
+
+(defn- start-server []
+  (reset! server (run-jetty (-> hello wrap-server) {:port 3000 :join? false})))
+
+(defn- restart-server []
+  (when @server
+    (.stop @server)
+    (start-server)))
 
 (defn run-nrepl []
   (try
@@ -18,5 +28,5 @@
       (prn :error (.getMessage e)))))
 
 (defn -main []
-  (run-jetty (-> hello wrap-server) {:port 3000 :join? false})
+  (start-server)
   (run-nrepl))
