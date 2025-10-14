@@ -36,10 +36,8 @@
     (throw (Exception. "Not allowed method")))
   (when-not (= request-method :post)
     (throw (Exception. "greeting parameter is needed.")))
-  {:status 200
-   :headers {"Content-Type" "text/plain"}
-   :body "OK"
-   :session (assoc session :greeting (get params "greeting"))})
+  (-> (res/redirect "/" 303)
+      (assoc :session (assoc session :greeting (get params "greeting")))))
 
 (defn router [{:keys [uri] :as req}]
   (case uri
