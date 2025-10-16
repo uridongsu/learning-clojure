@@ -58,7 +58,7 @@
       wrap-server))
 
 (defn- start-server []
-  (reset! server (run-jetty (fn [ctx] (app ctx)) {:port 3000 :join? false})))
+  (reset! server (run-jetty app {:port 3000 :join? false})))
 
 (defn- restart-server []
   (when @server
